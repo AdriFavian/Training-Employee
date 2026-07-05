@@ -1,18 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Employee } from '../../models/employee';
 import { EmployeeService } from '../../services/employee.service';
 
 @Component({
   selector: 'app-employee-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './employee-list.component.html',
-  styleUrls: ['./employee-list.component.css']
+  styleUrls: ['./employee-list.component.css'],
 })
 export class EmployeeListComponent implements OnInit {
   // 1. Definisikan variabel properti penampung data untuk HTML
   employees: Employee[] = [];
+  searchTerm: string = '';
+
+  // menyimpan status filter dan sort
+  selectedDepartment: string = '';
+  sortBy: string = 'name';
+  sortDirection: 'asc' | 'desc' = 'asc';
 
   // 2. Inject service ke dalam komponen
   constructor(private employeeService: EmployeeService) {}
@@ -25,5 +32,38 @@ export class EmployeeListComponent implements OnInit {
   // 4. Ambil data dari service
   loadEmployees(): void {
     this.employees = this.employeeService.getEmployees();
+  }
+
+  // Handle Search, Filter, dan Sort
+  get filteredEmployees(): Employee[] {
+    // Proses Pencarian Nama & Filter Departemen
+    let result = this.employees.filter((emp) => {
+      const matchName = emp.name
+        .toLowerCase()
+        .includes(this.searchTerm.toLowerCase());
+      const matchDept =
+        this.selectedDepartment === '' ||
+        emp.department === this.selectedDepartment;
+      return matchName && matchDept;
+    });
+
+    // Proses Sorting
+    result.sort((a, b) => {
+      let comparison = 0;
+
+      if (this.sortBy === 'name') {
+        comparison = a.name.localeCompare(b.name);
+      } else if (this.sortBy === 'salary') {
+        comparison = a.salary - b.salary;
+      }
+
+      return this.sortDirection === 'asc' ? comparison : -comparison;
+    });
+
+    return result;
+  }
+
+  toggleSortDirection(): void {
+    this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
   }
 }
