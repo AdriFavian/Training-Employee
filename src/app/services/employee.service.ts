@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { Employee } from 'src/app/models/employee';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class EmployeeService {
   // data dummy internal array JSON
@@ -17,7 +17,7 @@ export class EmployeeService {
       department: 'IT',
       position: 'Frontend Developer',
       joinDate: new Date('2024-01-15'),
-      salary: 8500000
+      salary: 8500000,
     },
     {
       id: 2,
@@ -27,7 +27,7 @@ export class EmployeeService {
       department: 'HR',
       position: 'HR Specialist',
       joinDate: new Date('2023-05-20'),
-      salary: 7000000
+      salary: 7000000,
     },
     {
       id: 3,
@@ -37,14 +37,17 @@ export class EmployeeService {
       department: 'Finance',
       position: 'Accountant',
       joinDate: new Date('2025-02-10'),
-      salary: 7500000
-    }
+      salary: 7500000,
+    },
   ];
 
-  constructor() { }
+  constructor() {}
 
-  // method to ambil all data diatas
   getEmployees(): Employee[] {
     return this.dummyEmployees;
+  }
+
+  deleteEmployee(id: number): void {
+    this.dummyEmployees = this.dummyEmployees.filter((emp) => emp.id !== id);
   }
 }

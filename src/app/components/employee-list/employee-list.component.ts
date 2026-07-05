@@ -66,4 +66,16 @@ export class EmployeeListComponent implements OnInit {
   toggleSortDirection(): void {
     this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
   }
+
+  deleteEmployee(id: number, name: string): void {
+    const confirmDelete = confirm(
+      `Apakah Anda yakin ingin menghapus karyawan "${name}"?`,
+    );
+
+    if (confirmDelete) {
+      // Panggil fungsi hapus di service
+      this.employeeService.deleteEmployee(id);
+      this.loadEmployees();
+    }
+  }
 }
