@@ -1,21 +1,29 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Employee } from '../../models/employee';
+import { EmployeeService } from '../../services/employee.service';
 
-import { EmployeeListComponent } from './employee-list.component';
+@Component({
+  selector: 'app-employee-list',
+  standalone: true,
+  imports: [CommonModule], // Wajib memasukkan CommonModule agar bisa menggunakan directive bawaan Angular nanti
+  templateUrl: './employee-list.component.html',
+  styleUrls: ['./employee-list.component.css']
+})
+export class EmployeeListComponent implements OnInit {
+  // array data karyawan
+  employees: Employee[] = [];
 
-describe('EmployeeListComponent', () => {
-  let component: EmployeeListComponent;
-  let fixture: ComponentFixture<EmployeeListComponent>;
+  // Inject EmployeeService ke dalam komponen melalui constructor
+  constructor(private employeeService: EmployeeService) {}
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [EmployeeListComponent]
-    });
-    fixture = TestBed.createComponent(EmployeeListComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  //   berjalan otomatis saat komponen pertama kali muncul
+  ngOnInit(): void {
+    this.loadEmployees();
+  }
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+  //  mengambil data dari service dan memasukkan ke variabel lokal
+  loadEmployees(): void {
+    this.employees = this.employeeService.getEmployees();
+  }
+}
