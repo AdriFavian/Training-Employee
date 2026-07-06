@@ -1,7 +1,10 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { EmployeeService } from '../../services/employee.service';
+import { Router, NavigationEnd } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-employee-form',
@@ -10,19 +13,26 @@ import { EmployeeService } from '../../services/employee.service';
   templateUrl: './employee-form.component.html',
   styleUrls: ['./employee-form.component.css']
 })
-export class EmployeeFormComponent implements OnInit {
-  @Output() formReset = new EventEmitter<void>();
+export class EmployeeFormComponent implements OnInit, OnDestroy {
   employeeForm!: FormGroup;
   isEditMode: boolean = false;
+  private routeSub!: Subscription;
 
   constructor(
     private fb: FormBuilder,
-    private employeeService: EmployeeService
+    private employeeService: EmployeeService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.initForm();
     this.checkEditMode();
+
+    this.routeSub = this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.checkEditMode();
+    });
   }
 
   initForm(): void {
@@ -38,12 +48,20 @@ export class EmployeeFormComponent implements OnInit {
 
   checkEditMode(): void {
     const editId = this.employeeService.editingEmployeeId;
-    if (editId !== null && !this.isEditMode) {
+    if (this.router.url.includes('/add-employee')) {
+      this.isEditMode = false;
+      this.employeeService.editingEmployeeId = null;
+      if (this.employeeForm) {
+        this.employeeForm.reset();
+      }
+    } else if (editId !== null) {
       const emp = this.employeeService.getEmployeeById(editId);
       if (emp) {
         this.isEditMode = true;
         this.employeeForm.patchValue(emp);
       }
+    } else if (editId === null && this.router.url.includes('/edit-employee')) {
+      this.router.navigate(['/employees']);
     }
   }
 
@@ -75,6 +93,12 @@ export class EmployeeFormComponent implements OnInit {
     this.isEditMode = false;
     this.employeeService.editingEmployeeId = null;
     this.employeeForm.reset();
-    this.formReset.emit();
+    this.router.navigate(['/employees']);
+  }
+
+  ngOnDestroy(): void {
+    if (this.routeSub) {
+      this.routeSub.unsubscribe();
+    }
   }
 }

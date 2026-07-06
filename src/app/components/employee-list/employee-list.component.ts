@@ -1,8 +1,9 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Employee } from '../../models/employee';
 import { EmployeeService } from '../../services/employee.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-employee-list',
@@ -12,8 +13,6 @@ import { EmployeeService } from '../../services/employee.service';
   styleUrls: ['./employee-list.component.css'],
 })
 export class EmployeeListComponent implements OnInit {
-  @Output() editClicked = new EventEmitter<number>();
-  
   // 1. Definisikan variabel properti penampung data untuk HTML
   employees: Employee[] = [];
   searchTerm: string = '';
@@ -24,7 +23,10 @@ export class EmployeeListComponent implements OnInit {
   sortDirection: 'asc' | 'desc' = 'asc';
 
   // 2. Inject service ke dalam komponen
-  constructor(private employeeService: EmployeeService) {}
+  constructor(
+    private employeeService: EmployeeService,
+    private router: Router
+  ) {}
 
   // 3. Jalankan logika saat komponen pertama kali dimuat
   ngOnInit(): void {
@@ -95,6 +97,6 @@ export class EmployeeListComponent implements OnInit {
 
   editEmployee(id: number): void {
     this.employeeService.editingEmployeeId = id;
-    this.editClicked.emit(id);
+    this.router.navigate(['/edit-employee']);
   }
 }

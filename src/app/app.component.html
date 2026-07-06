@@ -16,29 +16,27 @@
 
       <!-- Navigation Menu -->
       <nav class="px-4 py-6 space-y-1">
-        <button 
-          (click)="setTab('dashboard')"
-          [class.bg-slate-800]="activeTab === 'dashboard'"
-          [class.text-white]="activeTab === 'dashboard'"
+        <a 
+          routerLink="/employees"
+          routerLinkActive="bg-slate-800 text-white"
           class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium hover:bg-slate-800 hover:text-white transition-all group"
         >
-          <svg [class.text-blue-500]="activeTab === 'dashboard'" class="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <svg class="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z"></path>
           </svg>
           Dashboard / Daftar
-        </button>
+        </a>
 
-        <button 
-          (click)="setTab('add')"
-          [class.bg-slate-800]="activeTab === 'add'"
-          [class.text-white]="activeTab === 'add'"
+        <a 
+          routerLink="/add-employee"
+          routerLinkActive="bg-slate-800 text-white"
           class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium hover:bg-slate-800 hover:text-white transition-all group"
         >
-          <svg [class.text-blue-500]="activeTab === 'add'" class="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <svg class="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
           </svg>
           Tambah Karyawan
-        </button>
+        </a>
       </nav>
     </div>
 
@@ -60,9 +58,7 @@
     <!-- Top Header Navbar -->
     <header class="bg-white border-b border-slate-200 px-8 py-4 flex justify-between items-center z-10">
       <div>
-        <h1 class="text-2xl font-bold text-slate-800 tracking-tight">
-          {{ activeTab === 'dashboard' ? 'Dashboard Karyawan' : 'Registrasi Karyawan' }}
-        </h1>
+        <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Manajemen Karyawan</h1>
         <p class="text-xs text-slate-400 font-semibold mt-0.5">Aplikasi Manajemen Karyawan</p>
       </div>
       <div class="flex items-center gap-4 text-sm text-slate-500 font-medium">
@@ -75,17 +71,8 @@
     <!-- Main Dynamic Content Wrapper -->
     <section class="flex-1 overflow-y-auto p-8">
       <div class="max-w-7xl mx-auto">
-        <!-- Render lists -->
-        <app-employee-list 
-          *ngIf="activeTab === 'dashboard'" 
-          (editClicked)="setTab('add')"
-        ></app-employee-list>
-        
-        <!-- Render form -->
-        <app-employee-form 
-          *ngIf="activeTab === 'add'" 
-          (formReset)="setTab('dashboard')"
-        ></app-employee-form>
+        <!-- Route views will mount here -->
+        <router-outlet></router-outlet>
       </div>
     </section>
   </main>
