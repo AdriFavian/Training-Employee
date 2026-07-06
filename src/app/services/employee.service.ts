@@ -50,4 +50,25 @@ export class EmployeeService {
   deleteEmployee(id: number): void {
     this.dummyEmployees = this.dummyEmployees.filter((emp) => emp.id !== id);
   }
+
+  addEmployee(employee: Employee): void {
+    this.dummyEmployees.push(employee);
+  }
+
+  getEmployeeById(id: number): Employee | undefined {
+    return this.dummyEmployees.find((emp) => emp.id === id);
+  }
+  updateEmployee(updatedEmployee: Employee): void {
+    const index = this.dummyEmployees.findIndex(
+      (emp) => emp.id === updatedEmployee.id,
+    );
+    if (index !== -1) {
+      this.dummyEmployees[index] = {
+        ...this.dummyEmployees[index],
+        ...updatedEmployee,
+      };
+    }
+  }
+
+  editingEmployeeId: number | null = null;
 }

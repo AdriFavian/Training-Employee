@@ -78,4 +78,9 @@ export class EmployeeListComponent implements OnInit {
       this.loadEmployees();
     }
   }
+
+  editEmployee(id: number): void {
+    this.employeeService.editingEmployeeId = id;
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  }
 }
