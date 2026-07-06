@@ -22,6 +22,10 @@ export class EmployeeListComponent implements OnInit {
   sortBy: string = 'name';
   sortDirection: 'asc' | 'desc' = 'asc';
 
+  // Pagination states
+  currentPage: number = 1;
+  itemsPerPage: number = 5;
+
   // 2. Inject service ke dalam komponen
   constructor(
     private employeeService: EmployeeService,
@@ -67,8 +71,39 @@ export class EmployeeListComponent implements OnInit {
     return result;
   }
 
+  get pagedEmployees(): Employee[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    return this.filteredEmployees.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.filteredEmployees.length / this.itemsPerPage);
+  }
+
+  get pageNumbers(): number[] {
+    const pages = [];
+    for (let i = 1; i <= this.totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  get currentEndIndex(): number {
+    return Math.min(this.currentPage * this.itemsPerPage, this.filteredEmployees.length);
+  }
+
   toggleSortDirection(): void {
     this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+  }
+
+  onFilterChange(): void {
+    this.currentPage = 1;
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
   }
 
   get totalSalary(): number {

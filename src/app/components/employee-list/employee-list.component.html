@@ -25,12 +25,12 @@
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
             </span>
-            <input type="text" [(ngModel)]="searchTerm" placeholder="Cari nama karyawan..."
+            <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="onFilterChange()" placeholder="Cari nama karyawan..."
                 class="w-full pl-11 pr-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-[#f8fafc] text-sm text-slate-700 transition-all duration-200" />
         </div>
 
         <!-- Filter by Department -->
-        <select [(ngModel)]="selectedDepartment"
+        <select [(ngModel)]="selectedDepartment" (ngModelChange)="onFilterChange()"
             class="px-4 py-2.5 border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm font-medium text-slate-600 shadow-sm transition-all duration-200 cursor-pointer">
             <option value="">Semua Departemen</option>
             <option value="IT">IT</option>
@@ -39,7 +39,7 @@
         </select>
 
         <!-- Sort Dropdown selection -->
-        <select [(ngModel)]="sortBy"
+        <select [(ngModel)]="sortBy" (ngModelChange)="onFilterChange()"
             class="px-4 py-2.5 border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm font-medium text-slate-600 shadow-sm transition-all duration-200 cursor-pointer">
             <option value="name">Urutkan: Nama</option>
             <option value="salary">Urutkan: Gaji</option>
@@ -74,7 +74,7 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-150">
-                <tr *ngFor="let emp of filteredEmployees" class="hover:bg-slate-50/50 transition-colors duration-150">
+                <tr *ngFor="let emp of pagedEmployees" class="hover:bg-slate-50/50 transition-colors duration-150">
                     <!-- Name Column -->
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-800">
                         {{ emp.name }}
@@ -176,6 +176,57 @@
                 </tr>
             </tbody>
         </table>
+    </div>
+
+    <!-- Pagination controls -->
+    <div *ngIf="filteredEmployees.length > 0" class="flex flex-col sm:flex-row justify-between items-center gap-4 pt-6 border-t border-slate-100 text-sm">
+        <div class="text-slate-500 font-medium">
+            Menampilkan data ke-{{ (currentPage - 1) * itemsPerPage + 1 }} sampai ke-{{ currentEndIndex }} dari {{ filteredEmployees.length }} total karyawan
+        </div>
+        
+        <div class="flex items-center gap-2">
+            <!-- Prev Button -->
+            <button 
+                (click)="goToPage(currentPage - 1)" 
+                [disabled]="currentPage === 1"
+                class="px-3.5 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-transparent font-bold text-slate-600 transition-colors cursor-pointer disabled:cursor-not-allowed flex items-center gap-1.5 shadow-sm"
+            >
+                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                <span>Sebelumnya</span>
+            </button>
+
+            <!-- Page Number Buttons -->
+            <div class="flex items-center gap-1.5">
+                <button 
+                    *ngFor="let page of pageNumbers" 
+                    (click)="goToPage(page)"
+                    [class.bg-blue-600]="currentPage === page"
+                    [class.text-white]="currentPage === page"
+                    [class.border-blue-600]="currentPage === page"
+                    [class.shadow-md]="currentPage === page"
+                    [class.border-slate-200]="currentPage !== page"
+                    [class.text-slate-600]="currentPage !== page"
+                    [class.hover:bg-slate-50]="currentPage !== page"
+                    class="w-9 h-9 rounded-xl border text-xs font-extrabold transition-all cursor-pointer flex items-center justify-center shadow-sm"
+                >
+                    {{ page }}
+                </button>
+            </div>
+
+            <!-- Next Button -->
+            <button 
+                (click)="goToPage(currentPage + 1)" 
+                [disabled]="currentPage === totalPages"
+                class="px-3.5 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-transparent font-bold text-slate-600 transition-colors cursor-pointer disabled:cursor-not-allowed flex items-center gap-1.5 shadow-sm"
+            >
+                <span>Selanjutnya</span>
+                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </button>
+        </div>
     </div>
 
     <!-- Empty state view -->
