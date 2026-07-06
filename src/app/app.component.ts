@@ -16,4 +16,9 @@ import { EmployeeFormComponent } from './components/employee-form/employee-form.
 })
 export class AppComponent {
   title = 'Training-Employee';
+  activeTab: 'dashboard' | 'add' = 'dashboard';
+
+  setTab(tab: 'dashboard' | 'add'): void {
+    this.activeTab = tab;
+  }
 }

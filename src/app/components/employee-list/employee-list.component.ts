@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Employee } from '../../models/employee';
@@ -12,6 +12,8 @@ import { EmployeeService } from '../../services/employee.service';
   styleUrls: ['./employee-list.component.css'],
 })
 export class EmployeeListComponent implements OnInit {
+  @Output() editClicked = new EventEmitter<number>();
+  
   // 1. Definisikan variabel properti penampung data untuk HTML
   employees: Employee[] = [];
   searchTerm: string = '';
@@ -67,6 +69,18 @@ export class EmployeeListComponent implements OnInit {
     this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
   }
 
+  get totalSalary(): number {
+    return this.employees.reduce((sum, emp) => sum + emp.salary, 0);
+  }
+
+  get averageSalary(): number {
+    return this.employees.length > 0 ? this.totalSalary / this.employees.length : 0;
+  }
+
+  getDeptCount(dept: string): number {
+    return this.employees.filter((emp) => emp.department === dept).length;
+  }
+
   deleteEmployee(id: number, name: string): void {
     const confirmDelete = confirm(
       `Apakah Anda yakin ingin menghapus karyawan "${name}"?`,
@@ -81,6 +95,6 @@ export class EmployeeListComponent implements OnInit {
 
   editEmployee(id: number): void {
     this.employeeService.editingEmployeeId = id;
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    this.editClicked.emit(id);
   }
 }

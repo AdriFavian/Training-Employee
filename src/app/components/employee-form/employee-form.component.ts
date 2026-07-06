@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { EmployeeService } from '../../services/employee.service';
@@ -11,6 +11,7 @@ import { EmployeeService } from '../../services/employee.service';
   styleUrls: ['./employee-form.component.css']
 })
 export class EmployeeFormComponent implements OnInit {
+  @Output() formReset = new EventEmitter<void>();
   employeeForm!: FormGroup;
   isEditMode: boolean = false;
 
@@ -36,16 +37,14 @@ export class EmployeeFormComponent implements OnInit {
   }
 
   checkEditMode(): void {
-    setInterval(() => {
-      const editId = this.employeeService.editingEmployeeId;
-      if (editId !== null && !this.isEditMode) {
-        const emp = this.employeeService.getEmployeeById(editId);
-        if (emp) {
-          this.isEditMode = true;
-          this.employeeForm.patchValue(emp);
-        }
+    const editId = this.employeeService.editingEmployeeId;
+    if (editId !== null && !this.isEditMode) {
+      const emp = this.employeeService.getEmployeeById(editId);
+      if (emp) {
+        this.isEditMode = true;
+        this.employeeForm.patchValue(emp);
       }
-    }, 500);
+    }
   }
 
   onSubmit(): void {
@@ -76,5 +75,6 @@ export class EmployeeFormComponent implements OnInit {
     this.isEditMode = false;
     this.employeeService.editingEmployeeId = null;
     this.employeeForm.reset();
+    this.formReset.emit();
   }
 }
