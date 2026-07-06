@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Employee } from '../../models/employee';
 import { EmployeeService } from '../../services/employee.service';
 import { Router } from '@angular/router';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-employee-list',
@@ -29,7 +30,8 @@ export class EmployeeListComponent implements OnInit {
   // 2. Inject service ke dalam komponen
   constructor(
     private employeeService: EmployeeService,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) {}
 
   // 3. Jalankan logika saat komponen pertama kali dimuat
@@ -127,6 +129,7 @@ export class EmployeeListComponent implements OnInit {
       // Panggil fungsi hapus di service
       this.employeeService.deleteEmployee(id);
       this.loadEmployees();
+      this.toastService.show('Karyawan berhasil dihapus!', 'error');
     }
   }
 

@@ -5,6 +5,7 @@ import { EmployeeService } from '../../services/employee.service';
 import { Router, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-employee-form',
@@ -21,7 +22,8 @@ export class EmployeeFormComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private employeeService: EmployeeService,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -74,7 +76,7 @@ export class EmployeeFormComponent implements OnInit, OnDestroy {
           joinDate: new Date() 
         };
         this.employeeService.updateEmployee(updatedEmployee);
-        alert('Data karyawan berhasil diperbarui!');
+        this.toastService.show('Data karyawan berhasil diperbarui!', 'success');
       } else {
         const newEmployee = {
           id: Date.now(),
@@ -82,7 +84,7 @@ export class EmployeeFormComponent implements OnInit, OnDestroy {
           joinDate: new Date()
         };
         this.employeeService.addEmployee(newEmployee);
-        alert('Karyawan berhasil ditambahkan!');
+        this.toastService.show('Karyawan berhasil ditambahkan!', 'success');
       }
 
       this.resetForm();

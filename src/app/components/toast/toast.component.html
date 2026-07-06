@@ -1,0 +1,8 @@
+<div *ngIf="message" [ngClass]="{
+        'bg-green-500': message.type === 'success',
+        'bg-red-500': message.type === 'error',
+        'bg-blue-500': message.type === 'info'
+    }"
+    class="fixed bottom-5 right-5 text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300 transform translate-y-0 flex items-center gap-2">
+    <span>{{ message.text }}</span>
+</div>
